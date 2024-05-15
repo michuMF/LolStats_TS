@@ -4,9 +4,8 @@ import Header from "./Header"
 export default function Root() {
 	return (
 		<>
-			<div className='h-screen bg-c2 '>
+			<div className='h-screen bg-c4 '>
 				<Header />
-
 				<Outlet />
 			</div>
 		</>

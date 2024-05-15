@@ -25,7 +25,6 @@ export const fetchAllChampion = async (
 
 			const champions2: championDetails[] = filteredChampions.map(([, value]) => ({
 				...value,
-				championPoints: championPoints[filteredChampions.indexOf([, value])],
 			}))
 
 			console.log(champions2)
