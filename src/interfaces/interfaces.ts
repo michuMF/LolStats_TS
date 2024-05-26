@@ -1,3 +1,5 @@
+import { matchDataArrayType } from "@/fetches/fetchSummoner"
+
 export interface summonerDataProps {
 	puuid: string
 	gameName: string
@@ -19,6 +21,7 @@ export interface summonerDataProps {
 	wins: number
 	losses: number
 	threeChampions: championDetails[]
+	matchArray: matchDataArrayType[]
 }
 
 export interface champion {
@@ -44,6 +47,7 @@ export interface championDetails {
 		h: number
 	}
 	tags: string[]
+	games: string[]
 }
 
 export interface summonerContextProps {

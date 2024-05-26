@@ -27,8 +27,6 @@ export const fetchAllChampion = async (
 				...value,
 			}))
 
-			console.log(champions2)
-
 			return champions2
 		} catch (err) {
 			console.error(err)

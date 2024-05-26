@@ -4,6 +4,7 @@ import ErrorPage from "./error-page.tsx"
 import { QueryClient, QueryClientProvider } from "react-query"
 import Home from "./components/pages/Home/Home.tsx"
 import SummonerContextProvider from "./context/summonerContext.tsx"
+import Summoner from "./components/pages/Summoner/Summoner.tsx"
 
 function App() {
 	const queryClient = new QueryClient()
@@ -17,6 +18,10 @@ function App() {
 				{
 					path: "/",
 					element: <Home />,
+				},
+				{
+					path: "/Summoner",
+					element: <Summoner />,
 				},
 			],
 		},

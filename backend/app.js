@@ -9,12 +9,13 @@ app.listen(8800, () => {
 	console.log("server is running")
 })
 
-app.get("/summoners/:name", async (req, res) => {
+app.get("/summoners/:name/:tag", async (req, res) => {
 	const summonerName = req.params.name
+	const summonerTag = req.params.tag
 
 	try {
 		const response = await fetch(
-			`https://europe.api.riotgames.com/riot/account/v1/accounts/by-riot-id/${summonerName}/MID?api_key=${env.VITE_LOL_API_KEY}`
+			`https://europe.api.riotgames.com/riot/account/v1/accounts/by-riot-id/${summonerName}/${summonerTag}?api_key=${env.VITE_LOL_API_KEY}`
 		)
 
 		const data = await response.json()

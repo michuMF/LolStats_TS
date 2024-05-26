@@ -11,11 +11,13 @@ export default {
 	prefix: "",
 	theme: {
 		colors: {
-			c1: "#e7e247",
-			c2: "#3d3b30",
-			c3: "#4d5061",
-			c4: "#5c80bc",
-			c5: "#e9edde",
+			c1: "#112165",
+			c2: "#00E2B3",
+			c3: "#00BEC0",
+			c4: "#677381",
+			c5: "#000000",
+			victory: "#10B4D4",
+			defeat: "#D22525",
 		},
 	},
 	extend: {},

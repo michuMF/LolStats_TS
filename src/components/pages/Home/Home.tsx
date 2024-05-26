@@ -1,77 +1,115 @@
 import { useSummonerContext } from "@/context/useSummonerContext"
-import { useEffect, useState } from "react"
-
-const ONE_SECOND = 1000
-const AUTO_DELAY = ONE_SECOND * 10
+import { fetchSummoner } from "@/fetches/fetchSummoner"
+import { useState } from "react"
+import yasuo from "../../../assets/mainBackgroundChampions/yasuo.png"
+import thresh from "../../../assets/mainBackgroundChampions/thresh.png"
+import diana from "../../../assets/mainBackgroundChampions/diana.png"
+import footer from "../../../assets/footer/footer.png"
+import { Link } from "react-router-dom"
+// const ONE_SECOND = 1000
+// const AUTO_DELAY = ONE_SECOND * 10
 
 const Home = () => {
-	const [imgIndex, setImgIndex] = useState(0)
+	// const regionOptions = [
+	// 	{ region: "EUW", name: "euw1" },
+	// 	{ region: "EUNE", name: "eun1" },
+	// ]
 
-	const { summonerData } = useSummonerContext()
+	const { setSummonerData } = useSummonerContext()
+	// const [imgIndex, setImgIndex] = useState(0)
+	const [region, setRegion] = useState(false)
+	const [regionName, setRegionName] = useState({ region: "EUNE", name: "eun1" })
+	const [value, setValue] = useState({
+		gameName: "Taidani",
+		gameTag: "",
+		defaultGameTag: regionName.region,
+	})
 
-	useEffect(() => {
-		const interval = setInterval(() => {
-			setImgIndex(prev => (prev + 1) % 3)
-		}, AUTO_DELAY)
-		return () => clearInterval(interval)
-	}, [])
+	// useEffect(() => {
+	// 	const interval = setInterval(() => {
+	// 		setImgIndex(prev => (prev + 1) % 3)
+	// 	}, AUTO_DELAY)
+	// 	return () => clearInterval(interval)
+	// }, [])
 
 	return (
 		<>
 			<main className=' container mx-auto min-h-[calc(100vh-120px)] grid grid-cols-2 mt-10 '>
-				{summonerData ? (
-					<div className=' bg-c3 row-span-2 p-4 '>
-						<h1>
-							{summonerData.gameName} #{summonerData.tagLine}
-						</h1>
-						<p>{summonerData.summonerLevel}</p>
-						<img
-							src={`http://ddragon.leagueoflegends.com/cdn/13.11.1/img/profileicon/${summonerData.profileIconId}.png`}
-							alt=''
-						/>
-						<div>
-							<p>{summonerData.wins}</p>
-							<p>{summonerData.losses}</p>
-						</div>
-						<div>{summonerData.queueType}</div>
-						<div className='absolute '>
-							<img
-								width={200}
-								className=''
-								src={`/RankedEmblems/Rank=${
-									summonerData.tier.toLowerCase().charAt(0).toUpperCase() +
-									summonerData.tier.toLowerCase().slice(1)
-								}.png`}
-								alt=''
-							/>
+				<div className='flex items-center justify-center col-span-2 relative '>
+					<div className='absolute top-0 left-0 z-0'>
+						<img src={yasuo} className='' alt='' />
+					</div>
+					<div className='absolute top-0 left-1/2 -translate-x-2/3  z-0'>
+						<img src={thresh} className='' alt='' />
+					</div>
+					<div className='absolute top-0 right-0 z-0'>
+						<img src={diana} className='' alt='' />
+					</div>
+
+					<div className='relative'>
+						<button
+							className='h-[50px] z-10 bg-c2 px-4 rounded-l-xl '
+							onClick={() => setRegion(!region)}>
+							{regionName.region}
+						</button>
+						<div
+							style={{ display: region ? "block" : "none" }}
+							className='absolute bg-c2 left-0 right-0'>
+							<ul className='border'>
+								<li className='p-1 border-b'>
+									<button
+										className=''
+										onClick={() => {
+											setRegionName(prev => ({ ...prev, region: "EUW", name: "euw1" }))
+											setRegion(false)
+										}}>
+										EUW
+									</button>
+								</li>
+								<li className='p-1 border-b'>
+									<button
+										onClick={() => {
+											setRegionName(prev => ({ ...prev, region: "EUNE", name: "eun1" }))
+											setRegion(false)
+										}}>
+										EUNE
+									</button>
+								</li>
+							</ul>
 						</div>
 					</div>
-				) : (
-					""
-				)}
-				{summonerData ? (
-					<div
-						style={{
-							backgroundImage: `url('https://ddragon.leagueoflegends.com/cdn/img/champion/splash/${summonerData.threeChampions[imgIndex].id}_0.jpg')`,
-							backgroundPosition: "center",
-							backgroundSize: "cover",
+					<input
+						type='text'
+						placeholder='Summoners Name '
+						className='px-4 py-2 w-[700px] h-[50px] z-10'
+						onChange={e => setValue({ ...value, gameName: e.target.value })}
+					/>
+					<input
+						type='text'
+						className='px-4 py-2  w-[150px]  h-[50px] z-10 border-l'
+						placeholder='#gametag'
+						onChange={e => setValue({ ...value, gameTag: e.target.value })}
+					/>
+
+					<Link
+						to={`/Summoner`}
+						onClick={() => {
+							fetchSummoner(value, regionName.name).then(res => setSummonerData(res))
 						}}
-						className=''>
-						<div className='flex flex-col  '>
-							<h2 className=' bg-c1 px-6 py-3 rounded self-start ml-10 mt-5 '>
-								{summonerData.threeChampions[imgIndex].name}
-							</h2>
-							<h3 className=' bg-c1 px-6 py-3 rounded self-start ml-10 mt-5 '>
-								{summonerData.threeChampions[imgIndex].title}
-							</h3>
-							<p>{summonerData.threeChampions[imgIndex].blurb}</p>
-						</div>
-					</div>
-				) : (
-					""
-				)}
+						className='bg-c4 text-c1 px-4 py-2 rounded-r-xl  h-[50px] z-10 flex items-center'>
+						Search
+					</Link>
+				</div>
 
 				<div className='bg-c1'></div>
+
+				<footer className=' col-span-2 items-center relative'>
+					<img
+						src={footer}
+						alt=''
+						className='absolute bottom-0 left-1/4 w-[800px]'
+					/>
+				</footer>
 			</main>
 		</>
 	)
