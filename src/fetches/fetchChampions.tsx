@@ -1,4 +1,4 @@
-import { champion, championDetails } from "@/interfaces/interfaces"
+import { champion, championDetails } from "@/interfaces/types"
 
 interface dataProps {
 	data: championDetails[]
@@ -9,8 +9,6 @@ export const fetchAllChampion = async (
 ): Promise<championDetails[] | undefined> => {
 	if (champions) {
 		const championPoints = champions.map(({ championPoints }) => championPoints)
-
-		console.log(championPoints)
 
 		try {
 			const response = await fetch(

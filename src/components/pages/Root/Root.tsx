@@ -1,10 +1,11 @@
 import { Outlet } from "react-router-dom"
 import Header from "./Header"
+// import background from "../../../assets/background.webp"
 
 export default function Root() {
 	return (
 		<>
-			<div className='min-h-screen bg-c1 '>
+			<div className='min-h-screen    '>
 				<Header />
 				<Outlet />
 			</div>
