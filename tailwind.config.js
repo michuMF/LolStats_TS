@@ -9,17 +9,23 @@ export default {
 	],
 
 	prefix: "",
+
 	theme: {
-		colors: {
-			c1: "#112165",
-			c2: "#00E2B3",
-			c3: "#00BEC0",
-			c4: "#677381",
-			black: "#000000",
-			white: "#ffffff",
-			victory: "#74A2FF",
-			defeat: "#F57941",
+		extend: {
+			colors: {
+				c: {
+					1: "#112165",
+					2: "#00E2B3",
+					3: "#00BEC0",
+					4: "#677381",
+					black: "#000000",
+					white: "#ffffff",
+					victory: "#74A2FF",
+					defeat: "#F57941",
+				},
+			},
 		},
 	},
+
 	extend: {},
 }

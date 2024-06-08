@@ -1,20 +1,28 @@
 import { useSummonerContext } from "@/context/useSummonerContext"
 import blankSquare from "../../../../../assets/epmtyitemslot.png"
-const SummonersRunes = ({ count }: { count: number }) => {
+import { participants } from "@/types/types"
+const SummonersRunes = ({
+	count,
+	match,
+}: {
+	count: number
+	match: participants
+}) => {
 	const { summonerData } = useSummonerContext()
 
 	return (
 		<div className=' flex flex-col items-center gap-1'>
-			{summonerData?.summonerMainRunesFromMatch[count]?.icon ? (
+			{match.runes ? (
 				<img
-					width={50}
-					src={`./${summonerData?.summonerMainRunesFromMatch[count].icon}`}
+					width={43}
+					className='bg-black rounded-full'
+					src={`./${match.runes?.icon}`}
 					alt=''
 				/>
 			) : (
 				<div className=' '>
 					<img
-						width={50}
+						width={43}
 						src={blankSquare}
 						alt="runes don't exist anymore"
 						className='rounded-full opacity-40'
@@ -22,9 +30,11 @@ const SummonersRunes = ({ count }: { count: number }) => {
 				</div>
 			)}
 
-			{summonerData?.summonerSecondaryRunesFromMatch[count]?.icon ? (
+			{summonerData ? (
 				<img
-					src={`./${summonerData?.summonerSecondaryRunesFromMatch[count].icon}`}
+					width={40}
+					className='bg-black rounded-full'
+					src={`./${match.secondaryRunes.icon}`}
 					alt=''
 				/>
 			) : (

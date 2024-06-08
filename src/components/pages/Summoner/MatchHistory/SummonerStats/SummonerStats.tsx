@@ -1,6 +1,6 @@
 import blankSquare from "../../../../../assets/epmtyitemslot.png"
 import MatchStatus from "./MatchStatus"
-import { participants } from "@/interfaces/types"
+import { matchInfoProps, participants } from "@/types/types"
 import SummonerPlayedChampion from "./SummonerPlayedChampion"
 import SummonerSpells from "./SummonerSpells"
 import SummonersRunes from "./SummonersRunes"
@@ -8,9 +8,11 @@ import SummonerKDA from "./SummonerKDA"
 const SummonerStats = ({
 	match,
 	count,
+	data,
 }: {
 	match: participants | undefined
 	count: number
+	data: matchInfoProps | undefined
 }) => {
 	const itemsArray: number[] = []
 
@@ -20,12 +22,12 @@ const SummonerStats = ({
 				<div key={count}>
 					<div className=''>
 						<div className={`flex px-2 gap-5 `}>
-							<MatchStatus match={match} count={count} />
+							<MatchStatus data={data} match={match} count={count} />
 							<SummonerPlayedChampion match={match} />
-							<div className=' flex flex-col justify-between  '>
-								<div className='flex items-center gap-1'>
-									<SummonerSpells count={count} />
-									<SummonersRunes count={count} />
+							<div className=' flex flex-col justify-around  '>
+								<div className='flex items-center gap-1 '>
+									<SummonerSpells match={match} count={count} />
+									<SummonersRunes match={match} count={count} />
 									<SummonerKDA
 										death={match.deaths}
 										kill={match.kills}
@@ -49,13 +51,19 @@ const SummonerStats = ({
 										<div key={index}>
 											{item ? (
 												<img
-													width={30}
+													width={40}
+													height={40}
 													alt={`${item}`}
-													className='object-contain border h-[30px]'
+													className='object-contain border border-black rounded-lg'
 													src={`https://ddragon.leagueoflegends.com/cdn/14.10.1/img/item/${item}.png`}
 												/>
 											) : (
-												<img width={30} src={blankSquare} alt='blank Item' />
+												<img
+													width={40}
+													src={blankSquare}
+													className='rounded-lg'
+													alt='blank Item'
+												/>
 											)}
 										</div>
 									))}

@@ -6,39 +6,44 @@ const SummonerInfo = () => {
 
 	return (
 		summonerData && (
-			<div className='flex justify-around items-center '>
-				<div>
-					<h1>{summonerData.gameName}</h1>
+			<div className='flex justify-around items-center py-5 '>
+				<div className='space-y-5 bg-c-1 text-c-2 p-5 rounded-xl '>
+					<h2 className='text-center'>{summonerData.gameName}</h2>
 
-					<div className='relative'>
+					<div className='relative '>
 						<img
-							src={`https://ddragon.leagueoflegends.com/cdn/14.10.1/img/profileicon/${summonerData.profileIconId}.png`}
+							src={`https://ddragon.leagueoflegends.com/cdn/14.11.1/img/profileicon/${summonerData.profileIconId}.png`}
 							alt=''
 						/>
-						<p className='absolute bottom-0 right-0  bg-c2 text-c1 px-4 py-2 rounded-full'>
+						<p className='absolute bottom-0 right-0  bg-c-2 text-c-1 px-4 py-2 rounded-full'>
 							{summonerData.summonerLevel}
 						</p>
 					</div>
-					<Link className='bg-c2 text-c1 px-4 py-2' to='/Summoner'>
-						Update
-					</Link>
+					<div className=''>
+						<Link className='bg-c-2 text-c-1 px-4 py-2 rounded ' to='/Summoner'>
+							Update
+						</Link>
+					</div>
 				</div>
-				<div className='relative flex flex-col items-center text-xl'>
-					<p>{summonerData.queueType}</p>
-					<div className=' items-center gap-5'>
+				<div className=''>
+					<div className='flex items-center flex-col  gap-5 bg-c-1  text-c-3 p-2 rounded-xl'>
 						{summonerData.ranking
 							.map(info => (
-								<div key={info.queueType} className='flex   items-center gap-5 '>
-									<h2 className='text-3xl font-semibold'>
-										{info.tier.charAt(0).toUpperCase() + info.tier.slice(1).toLowerCase()}
-									</h2>
-									<p className='text-3xl'>{info.rank}</p>
-									<div>
-										<p className='text-center font-bold '>
+								<div key={info.queueType} className='grid grid-cols-3 gap-2 px-2 py-1'>
+									<div className='flex gap-3 items-center'>
+										<h3 className=''>
+											{info.tier.charAt(0).toUpperCase() +
+												info.tier.slice(1).toLowerCase()}
+										</h3>
+										<h3>{info.rank}</h3>
+									</div>
+
+									<div className=' flex flex-col items-center'>
+										<h4 className='text-center font-bold   '>
 											{info.queueType === "RANKED_SOLO_5x5"
-												? "Ranked Solo/Duo"
+												? "Ranked Solo"
 												: "Ranked Flex"}
-										</p>
+										</h4>
 										<img
 											width={200}
 											className=' '
@@ -47,13 +52,18 @@ const SummonerInfo = () => {
 											}.png`}
 										/>
 									</div>
-									<div className='flex flex-col items-center'>
-										<p>Win Rate {(info.wins / (info.losses + info.wins)) * 100}% </p>
-										<p>
-											{info.wins}W {info.losses}L
-										</p>
+									<div className='flex items-center justify-around text-center '>
+										<div className=''>
+											<p>
+												Win Rate{" "}
+												{((info.wins / (info.losses + info.wins)) * 100).toFixed(2)}%{" "}
+											</p>
+											<p className='tracking-widest'>
+												{info.wins}W {info.losses}L
+											</p>
+										</div>
+										<p>{info.leaguePoints} LP</p>
 									</div>
-									<p>{info.leaguePoints} LP</p>
 								</div>
 							))
 							.reverse()}

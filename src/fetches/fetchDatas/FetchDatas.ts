@@ -4,7 +4,9 @@ import {
 	SummonerSpell,
 	matchDataArrayType,
 	matchInfoProps,
-} from "@/interfaces/types"
+	matchInfoProps2,
+	participants,
+} from "@/types/types"
 
 export const fetchSummonerById = async (
 	id: string | undefined,
@@ -12,7 +14,9 @@ export const fetchSummonerById = async (
 ): Promise<SummonerRankingProps[] | undefined> => {
 	try {
 		const res = await fetch(
-			`https://${region}.api.riotgames.com/lol/league/v4/entries/by-summoner/${id}?api_key=RGAPI-8493f798-9e09-448b-afd1-0d669ccfea7c`
+			`https://${region}.api.riotgames.com/lol/league/v4/entries/by-summoner/${id}?api_key=${
+				import.meta.env.VITE_LOL_API_KEY
+			}`
 		)
 		const data: SummonerRankingProps[] = await res.json()
 
@@ -54,18 +58,18 @@ export const fetchSummonersSpells = async (): Promise<
 	}
 }
 
-export const getSummonersSpellById = () => {}
-
 export const fetchDataFromMatch = async (
 	array: string[] | undefined,
 	gameName: string
-): Promise<matchInfoProps> => {
+): Promise<matchInfoProps2> => {
 	let matchDataArray: matchDataArrayType[] = []
 	if (array)
 		for (const match of array) {
 			try {
 				const res = await fetch(
-					`https://europe.api.riotgames.com/lol/match/v5/matches/${match}?api_key=RGAPI-8493f798-9e09-448b-afd1-0d669ccfea7c`
+					`https://europe.api.riotgames.com/lol/match/v5/matches/${match}?api_key=${
+						import.meta.env.VITE_LOL_API_KEY
+					}`
 				)
 
 				const matchData = await res.json()
@@ -76,20 +80,50 @@ export const fetchDataFromMatch = async (
 			}
 		}
 
-	const participants = matchDataArray.map(info => info.info.participants)
-
-	const participantsSummonerSpells1Info = participants.map(participant =>
-		participant.map(participantInfo => participantInfo.summoner1Id)
-	)
-	const participantsSummonerSpells2Info = participants.map(participant =>
-		participant.map(participantInfo => participantInfo.summoner2Id)
+	const matchRankedSoloDuoInfo = matchDataArray.filter(
+		info => info.info.queueId === 420
 	)
 
-	const summonerSpells = await fetchSummonersSpells()
+	const matchRankedFlexInfo = matchDataArray.filter(
+		info => info.info.queueId === 440
+	)
+
+	const allGamesData = await splitTheData(
+		matchDataArray,
+		matchDataArray,
+		gameName
+	)
+
+	const rankedGamesData = await splitTheData(
+		matchRankedSoloDuoInfo,
+		matchRankedSoloDuoInfo,
+		gameName
+	)
+
+	const flexGamesData = await splitTheData(
+		matchRankedFlexInfo,
+		matchRankedFlexInfo,
+		gameName
+	)
+
+	return {
+		allGames: allGamesData,
+		rankedGames: rankedGamesData,
+		flexGames: flexGamesData,
+	}
+}
+
+const splitTheData = async (
+	array: matchDataArrayType[],
+	matchDataArray: matchDataArrayType[],
+	gameName: string
+): Promise<matchInfoProps> => {
+	const participants = array.map(info => info.info.participants)
 
 	const runesID = participants.map(match =>
 		match.map(participant => participant.perks.styles[0].selections[0].perk)
 	)
+
 	const allRunes = await fetchSummonersRunes()
 
 	const mainRunes2 = allRunes?.filter(runes =>
@@ -110,31 +144,58 @@ export const fetchDataFromMatch = async (
 		})
 	})
 
-	const test = participants.map((participant, index) =>
-		participant.map((participant2, index2) => {
+	let participantsInfo = participants.map((participant, index) =>
+		participant.map(participant2 => {
 			return {
 				...participant2,
-				runes: arrayOfMainRunes[index].find((rune, i) => {
+				runes: arrayOfMainRunes[index].find(rune => {
 					return rune?.id == participant2.perks.styles[0].selections[0].perk
 				}),
 			}
 		})
 	)
 
-	const summonerSpells1 = participantsSummonerSpells1Info.map(spell =>
-		spell.map(item =>
-			summonerSpells?.filter(sumSpell => sumSpell.key == item?.toString())
-		)
-	)
-	const summonerSpells2 = participantsSummonerSpells2Info.map(spell =>
-		spell.map(item =>
-			summonerSpells?.filter(sumSpell => sumSpell.key == item?.toString())
-		)
-	)
-
-	const summonerGameInfo = participants.map(participant =>
+	let summonerInfo = participants.map(participant =>
 		participant.find(summoner => summoner.riotIdGameName === gameName)
 	)
+
+	let secondaryRunesId = summonerInfo.map(match => match?.perks?.styles[1].style)
+
+	const secondaryRunes = secondaryRunesId.map(runes =>
+		allRunes?.find(runes2 => runes2.id === runes)
+	)
+
+	summonerInfo = summonerInfo.map((summoner, index) => {
+		return {
+			...summoner,
+			runes: arrayOfMainRunes[index].find(rune => {
+				return rune?.id == summoner?.perks.styles[0].selections[0].perk
+			}),
+			secondaryRunes: secondaryRunes[index],
+		}
+	})
+
+	const summonerSpells = await returnSummonerSpells(summonerInfo)
+
+	const summonerSpells2 = await returnSummonerSpells2(participantsInfo)
+
+	participantsInfo = participantsInfo.map((participant, index) => {
+		return participant.map((participant2, index2) => {
+			return {
+				...participant2,
+				summoner1Id: summonerSpells2.summonerSpellUsesBySummonerD[index][index2],
+				summoner2Id: summonerSpells2.summonerSpellUsesBySummonerF[index][index2],
+			}
+		})
+	})
+
+	summonerInfo = summonerInfo.map((summoner, index) => {
+		return {
+			...summoner,
+			summoner1Id: summonerSpells.summonerSpellUsesBySummonerD[index][0],
+			summoner2Id: summonerSpells.summonerSpellUsesBySummonerF[index][0],
+		}
+	})
 
 	const matchInfo = matchDataArray.map(info => [
 		{
@@ -144,23 +205,77 @@ export const fetchDataFromMatch = async (
 		},
 	])
 
-	console.log(matchInfo)
+	return {
+		summonerInfo,
+		matchInfo,
+		participantsInfo,
+	}
+}
 
-	const test2 = test.map((participant, index) => {
-		return { ...participant, queueId: matchInfo[index][0].queueId }
+const returnSummonerSpells = async (array: (participants | undefined)[]) => {
+	const summonerSpells = await fetchSummonersSpells()
+	const summonerChampions = array
+	const summonerSpellsId = summonerChampions
+		.map(summonerInfo => [summonerInfo?.summoner1Id, summonerInfo?.summoner2Id])
+		.filter(item => item.length === 2)
+
+	const summonerSpellsOne = summonerSpellsId.map(spell => spell[0])
+	const summonerSpellsTwo = summonerSpellsId.map(spell => spell[1])
+
+	const summonerSpellUsesBySummonerD = summonerSpellsOne.map(spell => {
+		return summonerSpells?.filter(sumSpell => sumSpell.key == spell?.toString())
 	})
 
-	console.log(test2[0])
+	const summonerSpellUsesBySummonerF = summonerSpellsTwo.map(spell => {
+		return summonerSpells?.filter(sumSpell => sumSpell.key == spell?.toString())
+	})
 
-	const matchInfoArray = {
-		participantsInfo: test,
-		summonerInfo: summonerGameInfo,
-		matchInfo: matchInfo,
-		summonerSpells1: summonerSpells1,
-		summonerSpells2: summonerSpells2,
+	return {
+		summonerSpellUsesBySummonerD,
+		summonerSpellUsesBySummonerF,
 	}
+}
 
-	return matchInfoArray
+const returnSummonerSpells2 = async (array: participants[][]) => {
+	const summonerSpells = await fetchSummonersSpells()
+	const summonerChampions = array
+
+	const summonerSpellsId = summonerChampions.map(summonerInfo =>
+		summonerInfo
+			.map(summoner => [summoner?.summoner1Id, summoner?.summoner2Id])
+			.filter(item => item.length === 2)
+	)
+
+	const summonerSpellsOne = summonerSpellsId.map(spell =>
+		spell.map(spell => spell[0])
+	)
+	const summonerSpellsTwo = summonerSpellsId.map(spell =>
+		spell.map(spell => spell[1])
+	)
+
+	let summonerSpellUsesBySummonerD = summonerSpellsOne.map(spell =>
+		spell.map(spell =>
+			summonerSpells?.filter(sumSpell => sumSpell.key == spell?.toString())
+		)
+	)
+
+	summonerSpellUsesBySummonerD = summonerSpellUsesBySummonerD.map(spell =>
+		spell.flat()
+	)
+
+	let summonerSpellUsesBySummonerF = summonerSpellsTwo.map(spell =>
+		spell.map(spell =>
+			summonerSpells?.filter(sumSpell => sumSpell.key == spell?.toString())
+		)
+	)
+	summonerSpellUsesBySummonerF = summonerSpellUsesBySummonerF.map(spell =>
+		spell.flat()
+	)
+
+	return {
+		summonerSpellUsesBySummonerD,
+		summonerSpellUsesBySummonerF,
+	}
 }
 
 export const fetchMatches = async (
@@ -168,25 +283,12 @@ export const fetchMatches = async (
 ): Promise<string[] | undefined> => {
 	try {
 		const res = await fetch(
-			`https://europe.api.riotgames.com/lol/match/v5/matches/by-puuid/${puuid}/ids?type=ranked&start=0&count=20&api_key=RGAPI-8493f798-9e09-448b-afd1-0d669ccfea7c`
+			`https://europe.api.riotgames.com/lol/match/v5/matches/by-puuid/${puuid}/ids?type=ranked&start=0&count=20&api_key=${
+				import.meta.env.VITE_LOL_API_KEY
+			}`
 		)
 		const data = await res.json()
 
-		return data
-	} catch (error) {
-		console.log({ error })
-	}
-}
-
-export const fetchChampionMastery = async (
-	puuid: string | undefined,
-	region: string
-) => {
-	try {
-		const res = await fetch(
-			`https://${region}.api.riotgames.com/lol/champion-mastery/v4/champion-masteries/by-puuid/${puuid}?api_key=RGAPI-8493f798-9e09-448b-afd1-0d669ccfea7c`
-		)
-		const data = await res.json()
 		return data
 	} catch (error) {
 		console.log({ error })
@@ -199,7 +301,9 @@ export const fetchSummonerByPuuid = async (
 ) => {
 	try {
 		const res = await fetch(
-			`https://${region}.api.riotgames.com/lol/summoner/v4/summoners/by-puuid/${puuid}?api_key=RGAPI-8493f798-9e09-448b-afd1-0d669ccfea7c`
+			`https://${region}.api.riotgames.com/lol/summoner/v4/summoners/by-puuid/${puuid}?api_key=${
+				import.meta.env.VITE_LOL_API_KEY
+			}`
 		)
 		const data = await res.json()
 		return data

@@ -4,16 +4,17 @@ import PlayersFromMatch from "./PlayersFromMatch"
 import { useState } from "react"
 
 import MoreMatchInfo from "./MoreMatchInfo/MoreMatchInfo"
-import { matchInfoProps } from "@/interfaces/types"
+import { matchInfoProps, participants } from "@/types/types"
 
 type VisibleContentState = {
 	[key: number]: boolean
 }
 
-const MatchHistory = ({ data }: { data: matchInfoProps }) => {
+const MatchHistory = ({ data }: { data: matchInfoProps | undefined }) => {
 	const [show, setShow] = useState<VisibleContentState>({})
 
 	const { summonerData } = useSummonerContext()
+	console.log(summonerData)
 
 	const toggleContent = (index: number) => {
 		setShow(prevState => ({
@@ -23,20 +24,25 @@ const MatchHistory = ({ data }: { data: matchInfoProps }) => {
 	}
 
 	return (
-		summonerData && (
-			<div className='flex-1  '>
+		data && (
+			<div className='flex-1  space-y-2 px-2  '>
 				{data.summonerInfo.map((match, index) => (
 					<div
 						key={index}
-						className={`relative ${match?.win ? "bg-victory" : "bg-defeat"}}`}>
+						className={`relative  ${match?.win ? "bg-c-victory" : "bg-c-defeat"}}`}>
 						<div
-							className={` relative  border-b border-white flex gap-5 p-1 py-2 ${
-								match?.win ? "bg-victory" : "bg-defeat"
+							className={` relative rounded-xl   border-b border-white flex gap-5 p-1 py-2 ${
+								match?.win ? "bg-c-victory" : "bg-c-defeat"
 							}`}>
-							<SummonerStats match={match} count={index} />
-							<PlayersFromMatch count={index} />
+							<SummonerStats data={data} match={match} count={index} />
+							<PlayersFromMatch match={match} count={index} data={data} />
 						</div>
-						<MoreMatchInfo show={show} toggleContent={toggleContent} index={index} />
+						<MoreMatchInfo
+							data={data}
+							show={show}
+							toggleContent={toggleContent}
+							index={index}
+						/>
 					</div>
 				))}
 			</div>

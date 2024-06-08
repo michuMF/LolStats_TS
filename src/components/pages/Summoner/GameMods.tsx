@@ -1,6 +1,5 @@
 import { useSummonerContext } from "@/context/useSummonerContext"
-import { matchInfoProps } from "@/interfaces/types"
-import { m } from "framer-motion"
+import { matchInfoProps } from "@/types/types"
 
 const gamesSystem = [
 	{ text: "All", queueId: "" },
@@ -9,28 +8,29 @@ const gamesSystem = [
 ]
 const GameMods = ({
 	setData,
-	data,
 }: {
 	setData: React.Dispatch<React.SetStateAction<matchInfoProps | undefined>>
 	data: matchInfoProps | undefined
 }) => {
 	const { summonerData } = useSummonerContext()
 
-	console.log(summonerData?.matchArray.summonerInfo)
-
-	const handleClick = game => {
-		console.log(
-			summonerData?.matchArray.summonerInfo.filter(match => match.queueId == "420")
-		)
+	const handleClick = (game: string) => {
+		if (game === "420") {
+			setData(summonerData?.matchArray.rankedGames)
+		} else if (game === "440") {
+			setData(summonerData?.matchArray.flexGames)
+		} else {
+			setData(summonerData?.matchArray.allGames)
+		}
 	}
 	return (
-		<div className='  w-full py-10  flex items-center justify-center gap-20 p-2  '>
+		<div className='  w-full py-10  flex items-center justify-center gap-20 p-2 px-10 container '>
 			{gamesSystem.map((game, index) => (
 				<div
 					key={index}
-					className='bg-victory text-white   text-center rounded-lg   '>
-					<button onClick={() => handleClick(game.queueId)}>
-						<h3 className='w-[400px] font-bold text-xl tracking-wider py-2  hover:bg-black transition-colors rounded-lg'>
+					className='bg-c-2 text-c-1   text-center rounded-lg flex w-full  items-center justify-center hover:bg-c-1 hover:text-c-2 transition-colors    '>
+					<button className='w-full' onClick={() => handleClick(game.queueId)}>
+						<h3 className=' flex-1 font-bold text-xl tracking-wider py-2   '>
 							{game.text}
 						</h3>
 					</button>

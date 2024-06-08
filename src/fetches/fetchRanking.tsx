@@ -1,4 +1,4 @@
-import { ChallengersArray } from "@/interfaces/types"
+import { ChallengersArray } from "@/types/types"
 import {} from "./fetchDatas/FetchDatas"
 
 export const fetchRanking = async (): Promise<

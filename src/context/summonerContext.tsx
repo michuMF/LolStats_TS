@@ -2,7 +2,7 @@ import {
 	summonerContextProps,
 	summonerContextProviderProps,
 	summonerDataProps,
-} from "@/interfaces/types"
+} from "@/types/types"
 import { createContext, useState } from "react"
 
 export const SummonerContext = createContext<summonerContextProps | undefined>(

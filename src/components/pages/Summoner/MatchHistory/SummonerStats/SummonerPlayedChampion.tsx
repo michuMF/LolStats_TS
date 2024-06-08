@@ -1,13 +1,17 @@
-import { participants } from "@/interfaces/types"
+import { participants } from "@/types/types"
 
 const SummonerPlayedChampion = ({ match }: { match: participants }) => {
 	return (
 		<div className='relative'>
 			<img
-				className=' rounded-full '
+				width={150}
+				className=' rounded-xl '
 				src={`https://ddragon.leagueoflegends.com/cdn/14.10.1/img/champion/${match.championName}.png`}
 			/>
-			<div className='absolute bottom-0 right-0 bg-[#04052e] text-[#ffffff] px-2 py-1 rounded-full'>
+			<div
+				className={`absolute bottom-8  right-0 ${
+					match.win ? "bg-blue-800" : "bg-red-800"
+				} text-[#ffffff] px-2 py-1 rounded-full`}>
 				{match.champLevel}
 			</div>
 		</div>

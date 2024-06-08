@@ -1,23 +1,16 @@
 import { useSummonerContext } from "@/context/useSummonerContext"
+import { useErrorContext } from "@/context/useErrorContext"
 import { fetchSummoner } from "@/fetches/fetchSummoner"
 import { useState } from "react"
-// import yasuo from "../../../assets/mainBackgroundChampions/yasuo.png"
 
-// import diana from "../../../assets/mainBackgroundChampions/diana.png"
-// import footer from "../../../assets/footer/footer.png"
-import { Link } from "react-router-dom"
+import { Link, useOutletContext } from "react-router-dom"
 import video from "../../../assets/backgroundVideo.webm"
-// const ONE_SECOND = 1000
-// const AUTO_DELAY = ONE_SECOND * 10
+import { ContextValueProps } from "../Root/Root"
 
 const Home = () => {
-	// const regionOptions = [
-	// 	{ region: "EUW", name: "euw1" },
-	// 	{ region: "EUNE", name: "eun1" },
-	// ]
-
+	const { setIsLoading } = useOutletContext<ContextValueProps>()
 	const { setSummonerData } = useSummonerContext()
-	// const [imgIndex, setImgIndex] = useState(0)
+	const { setError } = useErrorContext()
 	const [region, setRegion] = useState(false)
 	const [regionName, setRegionName] = useState({ region: "EUNE", name: "eun1" })
 	const [value, setValue] = useState({
@@ -26,47 +19,37 @@ const Home = () => {
 		defaultGameTag: regionName.region,
 	})
 
+	const regions = [
+		{ region: "EUNE", name: "eun1" },
+		{ region: "EUW", name: "euw1" },
+	]
+
 	return (
 		<>
-			<main className=' container mx-auto  min-h-[calc(100vh-120px)] relative py-10  '>
-				<div className='flex items-center justify-center col-span-2 relative py-[30px]  '>
-					{/* <div className='absolute top-[200px] left-0 z-0 -translate-x-[70%]'>
-						<img src={yasuo} className=' ' alt='' />
-					</div>
-
-					<div className='absolute top-[200px] right-0 z-0 translate-x-[60%] '>
-						<img src={diana} className='' alt='' />
-					</div> */}
-
-					<div className='relative'>
+			<main className=' container mx-auto  min-h-[calc(100vh-110px)] relative   flex flex-col items-center justify-between  '>
+				<div className='flex items-center justify-center col-span-2 relative   z-10    flex-1   '>
+					<div className='relative  '>
 						<button
-							className='h-[50px] z-10 bg-c2 px-4 rounded-l-xl '
+							className='h-[50px] z-10 bg-c-2 px-4 rounded-l-xl '
 							onClick={() => setRegion(!region)}>
 							{regionName.region}
 						</button>
 						<div
 							style={{ display: region ? "block" : "none" }}
-							className='absolute bg-c2 left-0 right-0'>
-							<ul className='border'>
-								<li className='p-1 border-b'>
-									<button
-										className=''
-										onClick={() => {
-											setRegionName(prev => ({ ...prev, region: "EUW", name: "euw1" }))
-											setRegion(false)
-										}}>
-										EUW
-									</button>
-								</li>
-								<li className='p-1 border-b'>
-									<button
-										onClick={() => {
-											setRegionName(prev => ({ ...prev, region: "EUNE", name: "eun1" }))
-											setRegion(false)
-										}}>
-										EUNE
-									</button>
-								</li>
+							className='absolute bg-white   left-0 right-0'>
+							<ul className=' space-y-1 text-center   p-1 '>
+								{regions.map(({ region, name }) => (
+									<li key={region} className='p-2   bg-c-2'>
+										<button
+											className=''
+											onClick={() => {
+												setRegionName(prev => ({ ...prev, region: region, name: name }))
+												setRegion(false)
+											}}>
+											{region}
+										</button>
+									</li>
+								))}
 							</ul>
 						</div>
 					</div>
@@ -85,18 +68,31 @@ const Home = () => {
 
 					<Link
 						to={`/Summoner`}
-						onClick={() => {
-							fetchSummoner(value, regionName.name).then(res => setSummonerData(res))
+						onClick={async () => {
+							try {
+								setIsLoading(true)
+								setError(false)
+								const res = await fetchSummoner(value, regionName.name)
+								console.log(res)
+
+								if (res === false) return setError(true)
+								return setSummonerData(res)
+							} catch (err) {
+								console.log("gfdgdfg")
+
+								setError(true)
+							} finally {
+								setIsLoading(false)
+							}
 						}}
-						className='bg-c4 text-c1 px-4 py-2 rounded-r-xl  h-[50px] z-10 flex items-center'>
+						className='bg-c-2 text-c1 px-4 py-2 rounded-r-xl  h-[50px] z-10 flex items-center'>
 						Search
 					</Link>
 				</div>
 
-				<div className=''></div>
-				<footer className=' absolute bottom-0 col-span-2   flex items-end '>
-					<video loop autoPlay muted className=' w-full'>
-						<source src={video} type='' />
+				<footer className='  top-0 col-span-2   w-full h-full   flex items-end  '>
+					<video loop autoPlay muted className=' w-full h-full '>
+						<source className='' src={video} type='' />
 					</video>
 				</footer>
 			</main>

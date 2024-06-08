@@ -7,6 +7,10 @@ import SummonerContextProvider from "./context/summonerContext.tsx"
 import Summoner from "./components/pages/Summoner/Summoner.tsx"
 import Ranking from "./components/pages/Ranking/Ranking.tsx"
 import Champions from "./components/pages/Champions/Champions.tsx"
+import Error from "./components/pages/Summoner/Error.tsx"
+import ErrorContextProvider from "./context/errorContext.tsx"
+
+console.log()
 
 function App() {
 	const queryClient = new QueryClient()
@@ -20,18 +24,22 @@ function App() {
 				{
 					path: "/",
 					element: <Home />,
+					errorElement: <Error />,
 				},
 				{
 					path: "/Summoner",
 					element: <Summoner />,
+					errorElement: <Error />,
 				},
 				{
 					path: "/Ranking",
 					element: <Ranking />,
+					errorElement: <Error />,
 				},
 				{
 					path: "/Champions",
 					element: <Champions />,
+					errorElement: <Error />,
 				},
 			],
 		},
@@ -39,7 +47,9 @@ function App() {
 	return (
 		<QueryClientProvider client={queryClient}>
 			<SummonerContextProvider>
-				<RouterProvider router={router} />
+				<ErrorContextProvider>
+					<RouterProvider router={router} />
+				</ErrorContextProvider>
 			</SummonerContextProvider>
 		</QueryClientProvider>
 	)

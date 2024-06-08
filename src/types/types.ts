@@ -19,7 +19,7 @@ export interface summonerDataProps {
 	wins: number
 	losses: number
 	threeChampions: championDetails[]
-	matchArray: matchInfoProps
+	matchArray: matchInfoProps2
 	summonerInfoFromMatch: participants[]
 
 	summonerSpells: {
@@ -95,7 +95,7 @@ export type matchDataArrayType = {
 		participants: string[]
 	}
 	info: {
-		queueId: string
+		queueId: number
 		gameDuration: number
 		participants: participants[]
 		gameEndTimestamp: number
@@ -105,12 +105,16 @@ export type matchInfoProps = {
 	participantsInfo: participants[][]
 	summonerInfo: (participants | undefined)[]
 	matchInfo: {
-		queueId: string
+		queueId: number
 		gameDuration: number
 		gameEndTimestamp: number
 	}[][]
-	summonerSpells1: (SummonerSpell[] | undefined)[][]
-	summonerSpells2: (SummonerSpell[] | undefined)[][]
+}
+
+export type matchInfoProps2 = {
+	allGames: matchInfoProps
+	rankedGames: matchInfoProps
+	flexGames: matchInfoProps
 }
 
 export type participants = {
@@ -150,6 +154,13 @@ export type participants = {
 				icon: string
 		  }
 		| undefined
+
+	secondaryRunes: {
+		id: number
+		key: string
+		name: string
+		icon: string
+	}
 }
 export type perksProps = {
 	styles: stylesProps[]
@@ -196,6 +207,10 @@ export type championDetails = {
 export type summonerContextProps = {
 	summonerData: summonerDataProps | undefined
 	setSummonerData: (data: summonerDataProps) => void
+}
+export type errorContextProps = {
+	error: boolean
+	setError: (data: boolean) => void
 }
 export type summonerContextProviderProps = {
 	children: React.ReactNode

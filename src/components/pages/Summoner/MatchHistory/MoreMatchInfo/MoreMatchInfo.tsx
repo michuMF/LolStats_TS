@@ -1,19 +1,22 @@
 import { useSummonerContext } from "@/context/useSummonerContext"
 import { FaArrowDown } from "react-icons/fa"
 import blankSquare from "../../../../../assets/epmtyitemslot.png"
+import { matchInfoProps } from "@/types/types"
 
 const MoreMatchInfo = ({
 	toggleContent,
 	index,
 	show,
+	data,
 }: {
 	toggleContent: (index: number) => void
 	index: number
 	show: { [key: number]: boolean }
+	data: matchInfoProps | undefined
 }) => {
 	const { summonerData } = useSummonerContext()
 
-	const summonersItem = summonerData?.matchArray.participantsInfo.map(
+	const summonersItem = summonerData?.matchArray.allGames.participantsInfo.map(
 		participant =>
 			participant.map(stat => [
 				stat.item0,
@@ -26,10 +29,10 @@ const MoreMatchInfo = ({
 			])
 	)
 
-	const dmgDealt = summonerData?.matchArray.participantsInfo.map(champion =>
+	const dmgDealt = data?.participantsInfo.map(champion =>
 		champion.map(stat => stat.totalDamageDealtToChampions)
 	)
-	const dmgTaken = summonerData?.matchArray.participantsInfo.map(champion =>
+	const dmgTaken = data?.participantsInfo.map(champion =>
 		champion.map(stat => stat.totalDamageTaken)
 	)
 
@@ -39,7 +42,7 @@ const MoreMatchInfo = ({
 
 	return (
 		<>
-			<div className='absolute right-0 bottom-0'>
+			<div className='absolute right-1 bottom-1 bg-c-1 text-c-2 px-2 py-2 rounded-full flex items-center justify-center'>
 				<button onClick={() => toggleContent(index)}>
 					<FaArrowDown />
 				</button>
@@ -47,17 +50,17 @@ const MoreMatchInfo = ({
 			{show[index] && (
 				<div className=' border-b border-white   '>
 					<div className='grid grid-cols-5 place-content-center text-center w-full '>
-						<p className='p-2 border-4 border-r-0 border-c2'>Champions</p>
-						<p className='p-2 border-4 border-r-0 border-c2 '>DMG Dealt/Taken</p>
-						<p className='p-2 border-4 border-r-0 border-c2'>KDA</p>
-						<p className='p-2 border-4 border-r-0 border-c2'>CS</p>
-						<p className='p-2 border-4 border-c2 '>Items</p>
-						{summonerData?.matchArray.participantsInfo[index].map((item, i) => {
+						<p className='p-2 border-4 border-r-0 border-c-2'>Champions</p>
+						<p className='p-2 border-4 border-r-0 border-c-2 '>DMG Dealt/Taken</p>
+						<p className='p-2 border-4 border-r-0 border-c-2'>KDA</p>
+						<p className='p-2 border-4 border-r-0 border-c-2'>CS</p>
+						<p className='p-2 border-4 border-c-2 '>Items</p>
+						{data?.participantsInfo[index].map((item, i) => {
 							return (
 								<>
 									<div
 										className={` pl-2 flex items-center gap-1 ${
-											item.win ? "bg-victory" : "bg-defeat"
+											item.win ? "bg-c-victory" : "bg-c-defeat"
 										}`}>
 										<div className='relative'>
 											<img
@@ -71,26 +74,19 @@ const MoreMatchInfo = ({
 										</div>
 
 										<div>
-											{summonerData?.matchArray.summonerSpells1[index][i]?.map(
-												(item, index) => (
-													<img
-														key={index}
-														width={21}
-														src={`./spell/${item.id}.png`}
-														alt=''
-													/>
-												)
-											)}
-											{summonerData?.matchArray.summonerSpells2[index][i]?.map(
-												(item, index) => (
-													<img
-														key={index}
-														width={21}
-														src={`./spell/${item.id}.png`}
-														alt=''
-													/>
-												)
-											)}
+											<img
+												key={index}
+												width={21}
+												src={`./spell/${item.summoner1Id.id}.png`}
+												alt=''
+											/>
+
+											<img
+												key={index}
+												width={21}
+												src={`./spell/${item.summoner2Id.id}.png`}
+												alt=''
+											/>
 										</div>
 										<div>
 											<img width={42} src={`./${item.runes?.icon}`} alt='' />
@@ -99,7 +95,7 @@ const MoreMatchInfo = ({
 									</div>
 									<div
 										className={`flex gap-5 bg-defeat ${
-											item.win ? "bg-victory" : "bg-defeat"
+											item.win ? "bg-c-victory" : "bg-c-defeat"
 										}`}>
 										<div>
 											<p className='text-center'>{item.totalDamageDealtToChampions}</p>
@@ -110,7 +106,7 @@ const MoreMatchInfo = ({
 															(item.totalDamageDealtToChampions / highestDmgDealt[index]) * 100
 														}%`,
 													}}
-													className={` h-2 bg-c2 `}></div>
+													className={` h-2 bg-c-2 `}></div>
 											</div>
 										</div>
 										<div>
@@ -122,13 +118,13 @@ const MoreMatchInfo = ({
 															(item.totalDamageTaken / highestDmgTaken[index]) * 100
 														}%`,
 													}}
-													className={` h-2 bg-c4 `}></div>
+													className={` h-2 bg-c-4 `}></div>
 											</div>
 										</div>
 									</div>
 									<div
 										className={`  flex flex-col items-center ${
-											item.win ? "bg-victory" : "bg-defeat"
+											item.win ? "bg-c-victory" : "bg-c-defeat"
 										}`}>
 										<div className='flex gap-2'>
 											<p>{item.kills} /</p>
@@ -137,11 +133,13 @@ const MoreMatchInfo = ({
 										</div>
 										<p className='text-center'>{item.challenges.kda.toFixed(2)}</p>
 									</div>
-									<p className={`${item.win ? "bg-victory" : "bg-defeat"}`}>
+									<p className={`${item.win ? "bg-c-victory" : "bg-c-defeat"}`}>
 										{item.totalMinionsKilled}
 									</p>
 									<div
-										className={`flex  gap-1 ${item.win ? "bg-victory" : "bg-defeat"}`}>
+										className={`flex  gap-1 ${
+											item.win ? "bg-c-victory" : "bg-c-defeat"
+										}`}>
 										{summonersItem &&
 											summonersItem[index][i]?.map((item, index) =>
 												item > 0 ? (

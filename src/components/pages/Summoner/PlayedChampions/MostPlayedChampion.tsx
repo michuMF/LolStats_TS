@@ -1,20 +1,20 @@
 import { useSummonerContext } from "@/context/useSummonerContext"
-import { participants } from "@/interfaces/types"
+import { participants } from "@/types/types"
 
 const MostPlayedChampion = () => {
 	const { summonerData } = useSummonerContext()
 
-	const playedChampionsStats = countChampionsGame(
-		summonerData?.matchArray?.summonerInfo
-	)
+	const playedChampionsStats = summonerData
+		? countChampionsGame(summonerData?.matchArray?.allGames.summonerInfo)
+		: []
 	return (
 		summonerData && (
-			<div className=' w-[30%]  self-start  text-c1 '>
+			<div className=' w-[30%]  self-start  text-c1 space-y-2 px-4 '>
 				{playedChampionsStats.map(item => (
 					<div
 						key={item.championName}
-						className='flex items-center justify-around py-2'>
-						<div className='flex gap-2 items-center'>
+						className='flex items-center justify-between px-4 py-2 bg-c-1  text-c-2  rounded-xl '>
+						<div className='flex gap-2 items-center  '>
 							<img
 								width={60}
 								src={`https://ddragon.leagueoflegends.com/cdn/14.10.1/img/champion/${item.championName}.png`}
@@ -24,15 +24,18 @@ const MostPlayedChampion = () => {
 							<p className='text-xl font-bold'>{item.championName}</p>
 						</div>
 						<div className='text-center'>
-							<p>{item.kda}</p>
+							<p className='text-[18px] font-bold'>{Number(item.kda).toFixed(2)}</p>
 							<p>
-								{item.kill / item.playedGame} / {item.assist / item.playedGame} /{" "}
-								{item.death / item.playedGame}
+								{(item.kill / item.playedGame).toFixed(2)} /{" "}
+								{(item.assist / item.playedGame).toFixed(2)} /{" "}
+								{(item.death / item.playedGame).toFixed(2)}
 							</p>
 						</div>
 						<div className='text-center'>
-							<p className='text-victory'>{(item.win / item.playedGame) * 100}%</p>
-							<p className='text-c4'>{item.playedGame} played</p>
+							<p className='text-c-victory'>
+								{((item.win / item.playedGame) * 100).toFixed(2)}%
+							</p>
+							<p className='text-c-3'>{item.playedGame} played</p>
 						</div>
 					</div>
 				))}
@@ -43,9 +46,7 @@ const MostPlayedChampion = () => {
 
 export default MostPlayedChampion
 
-const countChampionsGame = (
-	array: (participants | undefined)[] | undefined
-) => {
+const countChampionsGame = (array: participants[]) => {
 	const championStats: championStatsType = {}
 
 	array.forEach(item => {
