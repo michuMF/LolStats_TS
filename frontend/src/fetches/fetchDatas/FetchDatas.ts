@@ -138,7 +138,7 @@ const splitTheData = async (
 
 	const mainRunesNamesFlat = mainRunesNames?.flat()
 
-	const arrayOfMainRunes = runesID.map((runes, index) => {
+	const arrayOfMainRunes = runesID.map(runes => {
 		return runes.map(rune => {
 			return mainRunesNamesFlat?.find(item => item.id === rune)
 		})
@@ -155,11 +155,16 @@ const splitTheData = async (
 		})
 	)
 
-	let summonerInfo = participants.map(participant =>
-		participant.find(summoner => summoner.riotIdGameName === gameName)
-	)
+	let summonerInfo: participants[] = participants.map(
+		participant =>
+			participant.find(
+				summoner => summoner.riotIdGameName === gameName
+			) as participants
+	) as participants[]
 
-	let secondaryRunesId = summonerInfo.map(match => match?.perks?.styles[1].style)
+	const secondaryRunesId = summonerInfo.map(
+		match => match?.perks?.styles[1].style
+	)
 
 	const secondaryRunes = secondaryRunesId.map(runes =>
 		allRunes?.find(runes2 => runes2.id === runes)

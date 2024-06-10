@@ -6,7 +6,9 @@ export const fetchRanking = async (): Promise<
 > => {
 	try {
 		const res = await fetch(
-			"https://euw1.api.riotgames.com/lol/league/v4/challengerleagues/by-queue/RANKED_SOLO_5x5?api_key=RGAPI-8493f798-9e09-448b-afd1-0d669ccfea7c"
+			`https://euw1.api.riotgames.com/lol/league/v4/challengerleagues/by-queue/RANKED_SOLO_5x5?api_key=${
+				import.meta.env.VITE_LOL_API_KEY
+			}`
 		)
 
 		const data: { entries: ChallengersArray[] } = await res.json()
@@ -33,7 +35,9 @@ export const fetchRanking = async (): Promise<
 export const fetchEncryptedSummonerId = async (summonerId: string) => {
 	try {
 		const res = await fetch(
-			`https://euw1.api.riotgames.com/lol/summoner/v4/summoners/${summonerId}?api_key=RGAPI-8493f798-9e09-448b-afd1-0d669ccfea7c`
+			`https://euw1.api.riotgames.com/lol/summoner/v4/summoners/${summonerId}?api_key=${
+				import.meta.env.VITE_LOL_API_KEY
+			}`
 		)
 		const data = await res.json()
 
@@ -46,7 +50,9 @@ export const fetchEncryptedSummonerId = async (summonerId: string) => {
 const fetchSummonerByEncryptedPuuid = async (puuid: string | undefined) => {
 	try {
 		const res = await fetch(
-			`https://europe.api.riotgames.com/riot/account/v1/accounts/by-puuid/LFgE_aIt-_WS0seKnt1uZMjtK7olPtxAoKStlkfTC9RxSYK0EXEI9CUdcEhg8BgSS4vaMumUlmMfcw?api_key=RGAPI-8493f798-9e09-448b-afd1-0d669ccfea7c`,
+			`https://europe.api.riotgames.com/riot/account/v1/accounts/by-puuid/${puuid}?api_key=${
+				import.meta.env.VITE_LOL_API_KEY
+			}`,
 			{}
 		)
 		const data = await res.json()

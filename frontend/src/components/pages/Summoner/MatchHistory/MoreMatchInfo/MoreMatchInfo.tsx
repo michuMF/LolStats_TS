@@ -1,3 +1,4 @@
+/* eslint-disable no-mixed-spaces-and-tabs */
 import { useSummonerContext } from "@/context/useSummonerContext"
 import { FaArrowDown } from "react-icons/fa"
 import blankSquare from "../../../../../assets/epmtyitemslot.png"
@@ -77,14 +78,22 @@ const MoreMatchInfo = ({
 											<img
 												key={index}
 												width={21}
-												src={`./spell/${item.summoner1Id.id}.png`}
+												src={`./spell/${
+													typeof item.summoner1Id === "object"
+														? item.summoner1Id.id
+														: item.summoner1Id
+												}.png`}
 												alt=''
 											/>
 
 											<img
 												key={index}
 												width={21}
-												src={`./spell/${item.summoner2Id.id}.png`}
+												src={`./spell/${
+													typeof item.summoner2Id === "object"
+														? item.summoner2Id.id
+														: item.summoner2Id
+												}.png`}
 												alt=''
 											/>
 										</div>
@@ -103,7 +112,10 @@ const MoreMatchInfo = ({
 												<div
 													style={{
 														width: `${
-															(item.totalDamageDealtToChampions / highestDmgDealt[index]) * 100
+															highestDmgDealt
+																? (item.totalDamageDealtToChampions / highestDmgDealt[index]) *
+																  100
+																: 0
 														}%`,
 													}}
 													className={` h-2 bg-c-2 `}></div>
@@ -115,7 +127,9 @@ const MoreMatchInfo = ({
 												<div
 													style={{
 														width: `${
-															(item.totalDamageTaken / highestDmgTaken[index]) * 100
+															highestDmgTaken
+																? (item.totalDamageTaken / highestDmgTaken[index]) * 100
+																: 0
 														}%`,
 													}}
 													className={` h-2 bg-c-4 `}></div>
@@ -141,7 +155,7 @@ const MoreMatchInfo = ({
 											item.win ? "bg-c-victory" : "bg-c-defeat"
 										}`}>
 										{summonersItem &&
-											summonersItem[index][i]?.map((item, index) =>
+											summonersItem[index][i]?.map(item =>
 												item > 0 ? (
 													<img
 														width={25}

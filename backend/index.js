@@ -5,9 +5,7 @@ import { env } from "process"
 const app = express()
 app.use(express.json())
 app.use(cors())
-app.use("/", (req, res) => {
-	res.send("Servers is Running")
-})
+
 app.listen(8800, () => {
 	console.log("server is running")
 })

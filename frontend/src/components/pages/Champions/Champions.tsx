@@ -1,5 +1,3 @@
-import React from "react"
-
 const Champions = () => {
 	return <div>Champions</div>
 }

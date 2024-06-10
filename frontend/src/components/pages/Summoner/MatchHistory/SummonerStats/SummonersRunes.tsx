@@ -1,13 +1,7 @@
 import { useSummonerContext } from "@/context/useSummonerContext"
 import blankSquare from "../../../../../assets/epmtyitemslot.png"
 import { participants } from "@/types/types"
-const SummonersRunes = ({
-	count,
-	match,
-}: {
-	count: number
-	match: participants
-}) => {
+const SummonersRunes = ({ match }: { count: number; match: participants }) => {
 	const { summonerData } = useSummonerContext()
 
 	return (

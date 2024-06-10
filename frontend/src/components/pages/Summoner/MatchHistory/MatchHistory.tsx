@@ -4,7 +4,7 @@ import PlayersFromMatch from "./PlayersFromMatch"
 import { useState } from "react"
 
 import MoreMatchInfo from "./MoreMatchInfo/MoreMatchInfo"
-import { matchInfoProps, participants } from "@/types/types"
+import { matchInfoProps } from "@/types/types"
 
 type VisibleContentState = {
 	[key: number]: boolean

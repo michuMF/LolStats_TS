@@ -1,3 +1,4 @@
+/* eslint-disable no-mixed-spaces-and-tabs */
 export interface summonerDataProps {
 	puuid: string
 	gameName: string
@@ -103,7 +104,7 @@ export type matchDataArrayType = {
 }
 export type matchInfoProps = {
 	participantsInfo: participants[][]
-	summonerInfo: (participants | undefined)[]
+	summonerInfo: participants[]
 	matchInfo: {
 		queueId: number
 		gameDuration: number
@@ -137,8 +138,9 @@ export type participants = {
 	item6: number
 	teamId: number
 	win: boolean
-	summoner1Id: number
-	summoner2Id: number
+	summoner1Id: SummonerSpellTypes
+
+	summoner2Id: SummonerSpellTypes
 	perks: perksProps
 	challenges: {
 		kda: number
@@ -161,6 +163,14 @@ export type participants = {
 		name: string
 		icon: string
 	}
+}
+
+export type SummonerSpellTypes = number | SummonerSpellsProps
+
+export type SummonerSpellsProps = {
+	id: string
+	name: string
+	// inne właściwości
 }
 export type perksProps = {
 	styles: stylesProps[]

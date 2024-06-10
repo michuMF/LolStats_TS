@@ -22,7 +22,7 @@ const Summoner = () => {
 
 	if (error) return <Error />
 	if (isLoading) return <Loading />
-	return (
+	return data ? (
 		<div className='container mx-auto bg-[#fff]'>
 			<div>
 				<SummonerInfo />
@@ -33,6 +33,8 @@ const Summoner = () => {
 				</div>
 			</div>
 		</div>
+	) : (
+		<Error />
 	)
 }
 

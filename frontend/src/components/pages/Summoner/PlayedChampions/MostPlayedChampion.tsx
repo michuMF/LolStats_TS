@@ -4,7 +4,9 @@ import { matchInfoProps, participants } from "@/types/types"
 const MostPlayedChampion = ({ data }: { data: matchInfoProps }) => {
 	const { summonerData } = useSummonerContext()
 
-	const playedChampionsStats = data ? countChampionsGame(data?.summonerInfo) : []
+	const playedChampionsStats = data.summonerInfo
+		? countChampionsGame(data?.summonerInfo)
+		: []
 	return (
 		summonerData && (
 			<div className=' w-[30%]  self-start  text-c1 space-y-2 px-4 '>
