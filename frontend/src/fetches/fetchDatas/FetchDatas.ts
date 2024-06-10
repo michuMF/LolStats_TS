@@ -1,5 +1,6 @@
 import {
 	AllRunesProp,
+	RunesProps,
 	SummonerRankingProps,
 	SummonerSpell,
 	matchDataArrayType,
@@ -175,8 +176,8 @@ const splitTheData = async (
 			...summoner,
 			runes: arrayOfMainRunes[index].find(rune => {
 				return rune?.id == summoner?.perks.styles[0].selections[0].perk
-			}),
-			secondaryRunes: secondaryRunes[index],
+			}) as RunesProps,
+			secondaryRunes: secondaryRunes[index] as RunesProps,
 		}
 	})
 
@@ -194,13 +195,15 @@ const splitTheData = async (
 		})
 	})
 
-	summonerInfo = summonerInfo.map((summoner, index) => {
-		return {
-			...summoner,
-			summoner1Id: summonerSpells.summonerSpellUsesBySummonerD[index][0],
-			summoner2Id: summonerSpells.summonerSpellUsesBySummonerF[index][0],
-		}
-	})
+	if (summonerSpells !== undefined) {
+		summonerInfo = summonerInfo.map((summoner, index) => {
+			return {
+				...summoner,
+				summoner1Id: summonerSpells?.summonerSpellUsesBySummonerD[index][0],
+				summoner2Id: summonerSpells?.summonerSpellUsesBySummonerF[index][0],
+			}
+		})
+	}
 
 	const matchInfo = matchDataArray.map(info => [
 		{
@@ -217,7 +220,7 @@ const splitTheData = async (
 	}
 }
 
-const returnSummonerSpells = async (array: (participants | undefined)[]) => {
+const returnSummonerSpells = async (array: participants[]) => {
 	const summonerSpells = await fetchSummonersSpells()
 	const summonerChampions = array
 	const summonerSpellsId = summonerChampions

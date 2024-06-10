@@ -148,21 +148,16 @@ export type participants = {
 	totalDamageDealtToChampions: number
 	totalDamageTaken: number
 	totalMinionsKilled: number
-	runes:
-		| {
-				id: number
-				key: string
-				name: string
-				icon: string
-		  }
-		| undefined
+	runes: RunesProps | undefined
 
-	secondaryRunes: {
-		id: number
-		key: string
-		name: string
-		icon: string
-	}
+	secondaryRunes: RunesProps
+}
+
+export type RunesProps = {
+	id: number
+	key: string
+	name: string
+	icon: string
 }
 
 export type SummonerSpellTypes = number | SummonerSpellsProps
