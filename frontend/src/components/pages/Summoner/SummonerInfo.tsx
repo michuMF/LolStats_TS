@@ -6,7 +6,7 @@ const SummonerInfo = () => {
 
 	return (
 		summonerData && (
-			<div className='flex justify-around items-center py-5 '>
+			<div className='flex justify-around items-center py-5  '>
 				<div className='space-y-5 bg-c-1 text-c-2 p-5 rounded-xl '>
 					<h2 className='text-center'>{summonerData.gameName}</h2>
 

@@ -1,12 +1,10 @@
 import { useSummonerContext } from "@/context/useSummonerContext"
-import { participants } from "@/types/types"
+import { matchInfoProps, participants } from "@/types/types"
 
-const MostPlayedChampion = () => {
+const MostPlayedChampion = ({ data }: { data: matchInfoProps }) => {
 	const { summonerData } = useSummonerContext()
 
-	const playedChampionsStats = summonerData
-		? countChampionsGame(summonerData?.matchArray?.allGames.summonerInfo)
-		: []
+	const playedChampionsStats = data ? countChampionsGame(data?.summonerInfo) : []
 	return (
 		summonerData && (
 			<div className=' w-[30%]  self-start  text-c1 space-y-2 px-4 '>

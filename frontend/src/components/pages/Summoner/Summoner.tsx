@@ -28,7 +28,7 @@ const Summoner = () => {
 				<SummonerInfo />
 				<GameMods data={data} setData={setData} />
 				<div className=' flex  '>
-					<MostPlayedChampion />
+					<MostPlayedChampion data={data} />
 					<MatchHistory data={data} />
 				</div>
 			</div>
